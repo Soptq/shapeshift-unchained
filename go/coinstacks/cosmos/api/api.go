@@ -75,7 +75,10 @@ func New(httpClient *cosmos.HTTPClient, grpcClient *cosmos.GRPCClient, wsClient 
 	// compile check to ensure Handler implements BaseAPI
 	var _ api.BaseAPI = a.handler
 
-	r.Use(handlers.CORS())
+  headersOk := handlers.AllowedHeaders([]string{"X-Requested-With, Content-Type, Authorization"})
+  originsOk := handlers.AllowedOrigins([]string{"*"})
+  methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"})
+	r.Use(handlers.CORS(originsOk, headersOk, methodsOk))
 	r.Use(api.Scheme)
 	r.Use(api.Logger)
 
